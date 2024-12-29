@@ -1,11 +1,9 @@
 /* @refresh reload */
 import { render } from 'solid-js/web';
-
 import { Pixya } from '@/components/Pixya';
+import '@/index.sass';
 
-import '@/assets/sass/index.sass';
+const appContainer = document.querySelector<HTMLDivElement>('pixya');
+if (!appContainer) throw Error('No pixya container!');
 
-const pixyaApp = document.querySelector<HTMLDivElement>('.pixya-app');
-if (!pixyaApp) throw Error('No pixya-app found!');
-
-render(() => <Pixya />, pixyaApp);
+render(Pixya, appContainer);

@@ -1,13 +1,15 @@
-import { Footer } from './Footer';
+import { Footer } from '@/components/Footer';
+import { Workspace } from '@/components/Workspace';
+import { Header } from "@/components/Header";
+
+import style from '@/components/Pixya.module.sass';
 
 export function Pixya() {
   return (
-    <>
-      <header class="header">PIXYA</header>
-      <div class="viewport">
-        <canvas class="viewport__canvas" width="32" height="32"></canvas>
-      </div>
+    <div class={style.pixya}>
+      <Header />
+      <Workspace />
       <Footer />
-    </>
+    </div>
   )
 }

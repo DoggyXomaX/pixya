@@ -1,5 +1,7 @@
 import { compute } from '@/lib/helpers/compute';
 
+import style from './Footer.module.sass';
+
 const footerText = compute(() => {
   const fromYear = 2024;
   const footerText = ['(c) Artem Filin', `${fromYear}`];
@@ -9,5 +11,5 @@ const footerText = compute(() => {
 });
 
 export function Footer() {
-  return <footer class="footer">{footerText}</footer>
+  return <footer class={style.footer}>{footerText}</footer>
 }

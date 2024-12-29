@@ -14,5 +14,10 @@ export default defineConfig({
     alias: {
       '@': resolve(__dirname, 'src'),
     }
-  }
+  },
+  css: {
+    modules: {
+      localsConvention: 'camelCaseOnly', // Используйте camelCase для названий классов
+    },
+  },
 });
