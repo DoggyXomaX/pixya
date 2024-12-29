@@ -1,0 +1,1 @@
+export const compute = <T>(callback: () => T): T => callback();
