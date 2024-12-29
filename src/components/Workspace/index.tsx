@@ -2,11 +2,11 @@ import { Tools } from './Tools';
 import { Viewport } from './Viewport';
 import { Info } from './Info';
 
-import style from './Workspace.module.sass';
+import './Workspace.sass';
 
 export function Workspace() {
   return (
-    <div class={style.workspace}>
+    <div class="workspace">
       <Tools />
       <Viewport />
       <Info />

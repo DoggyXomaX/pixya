@@ -1,7 +1,7 @@
-import style from './Info.module.sass';
+import './Info.sass';
 
 export function Info() {
   return (
-    <div class={style.info} />
+    <div class="info" />
   );
 }

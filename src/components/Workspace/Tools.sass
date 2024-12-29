@@ -1,0 +1,20 @@
+.tools
+  display: flex
+  flex-direction: column
+  background-color: red
+  flex-basis: 64px
+  gap: 4px
+
+  &__tool
+    user-select: none
+    cursor: pointer
+    display: block
+    padding: 8px
+    width: 64px
+    height: 64px
+    background-color: blue
+    border-radius: 8px
+    &:hover
+      background-color: green
+    &.selected
+      background-color: orange
