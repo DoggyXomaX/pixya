@@ -19,8 +19,7 @@ type TToolStoreData = {
 class ToolStore extends XEventTarget<TToolStoreEventMap> {
   private readonly _get;
   private readonly _set;
-
-  private readonly defaults: TToolStoreData = {
+  private readonly _defaults: TToolStoreData = {
     tool: 'pencil',
     color: { r: 0, g: 0, b: 0, a: 255 },
     altColor: { r: 255, g: 255, b: 255, a: 255 },
@@ -30,7 +29,7 @@ class ToolStore extends XEventTarget<TToolStoreEventMap> {
   public constructor() {
     super();
 
-    [this._get, this._set] = createStore<TToolStoreData>({ ...this.defaults });
+    [this._get, this._set] = createStore<TToolStoreData>({ ...this._defaults });
   }
 
   public static get instance() {
@@ -70,8 +69,8 @@ class ToolStore extends XEventTarget<TToolStoreEventMap> {
   }
 
   public reset() {
-    Objectf.keys(this.defaults).forEach((key) =>
-      this._set(key, this.defaults[key])
+    Objectf.keys(this._defaults).forEach((key) =>
+      this._set(key, this._defaults[key])
     );
   }
 }

@@ -8,13 +8,12 @@ type THeaderStoreData = {
 class HeaderStore {
   private readonly _get;
   private readonly _set;
-
-  private readonly defaults: THeaderStoreData = {
+  private readonly _defaults: THeaderStoreData = {
     title: 'PIXYA',
   };
 
   public constructor() {
-    [this._get, this._set] = createStore<THeaderStoreData>({ ...this.defaults });
+    [this._get, this._set] = createStore<THeaderStoreData>({ ...this._defaults });
   }
 
   public static get instance() {
@@ -30,8 +29,8 @@ class HeaderStore {
   }
 
   public reset() {
-    Objectf.keys(this.defaults).forEach((key) =>
-      this._set(key, this.defaults[key])
+    Objectf.keys(this._defaults).forEach((key) =>
+      this._set(key, this._defaults[key])
     );
   }
 }
