@@ -1,7 +1,7 @@
 {
-  "name": "vite-template-solid",
-  "version": "0.0.0",
-  "description": "",
+  "name": "pixya",
+  "version": "0.1.0",
+  "description": "Pixel art something",
   "type": "module",
   "scripts": {
     "start": "vite",
@@ -15,10 +15,10 @@
     "sass-embedded": "^1.83.0",
     "typescript": "^5.7.2",
     "vite": "^6.0.0",
-    "vite-plugin-solid": "^2.11.0"
+    "vite-plugin-solid": "^2.11.0",
+    "path": "^0.12.7"
   },
   "dependencies": {
-    "path": "^0.12.7",
     "solid-js": "^1.9.3",
     "uuid": "^11.0.3"
   }
