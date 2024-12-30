@@ -91,6 +91,14 @@ class ImageStore extends XEventTarget<TImageStoreEventMap> {
     }
   }
 
+  public fillRect(id: unknown, x: number, y: number, width: number, height: number, color: TColor) {
+    const item = this.get(id);
+    if (item) {
+      item.fillRect(x, y, width, height, color);
+      this.dispatch('change', item);
+    }
+  }
+
   public fill(id: unknown, color: TColor) {
     const item = this.get(id);
     if (item) {

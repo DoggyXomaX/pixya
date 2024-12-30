@@ -48,11 +48,14 @@ export function Viewport() {
 
       const size = ToolStore.instance.size;
       const halfSize = size / 2 | 0;
-      for (let dy = 0; dy < size; dy++) {
-        for (let dx = 0; dx < size; dx++) {
-          currentFrame.store.setPixel(currentFrame.id, x + dx - halfSize, y + dy - halfSize, color);
-        }
-      }
+      currentFrame.store.fillRect(
+        currentFrame.id,
+        x - halfSize,
+        y - halfSize,
+        size,
+        size,
+        color,
+      );
     };
 
     const onEraser = (e: PointerEvent) => {
@@ -63,11 +66,14 @@ export function Viewport() {
 
       const size = ToolStore.instance.size;
       const halfSize = size / 2 | 0;
-      for (let dy = 0; dy < size; dy++) {
-        for (let dx = 0; dx < size; dx++) {
-          currentFrame.store.setPixel(currentFrame.id, x + dx - halfSize, y + dy - halfSize, { r: 0, g: 0, b: 0, a: 0 });
-        }
-      }
+      currentFrame.store.fillRect(
+        currentFrame.id,
+        x - halfSize,
+        y - halfSize,
+        size,
+        size,
+        { r: 0, g: 0, b: 0, a: 0 },
+      );
     };
 
     const onPointerDown = (e: PointerEvent) => {

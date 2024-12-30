@@ -113,6 +113,29 @@ class ImageDomain implements TImageInputData {
     outData[i + 3] = color.a & 0xff;
   }
 
+  public fillRect(x: number, y: number, width: number, height: number, color: TColor) {
+    const [color32] = new Int32Array(
+      new Uint8Array([
+        color.r & 0xff,
+        color.g & 0xff,
+        color.b & 0xff,
+        color.a & 0xff
+      ]).buffer
+    );
+    const data32 = new Int32Array(this._imageData.data.buffer);
+
+    const rowLen = this._width;
+    const fromY = Math.max(0, y);
+    const fromX = Math.max(0, x);
+    const toY = Math.min(y + height - 1, this._height - 1);
+    const toX = Math.min(x + width - 1, this._width - 1);
+    for (let y = fromY; y <= toY; y++ ) {
+      for (let x = fromX; x <= toX; x++) {
+        data32[y * rowLen + x] = color32;
+      }
+    }
+  }
+
   public fill(color: TColor) {
     const [color32] = new Int32Array(
       new Uint8Array([
