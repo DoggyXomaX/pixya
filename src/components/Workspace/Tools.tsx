@@ -7,6 +7,7 @@ import { ImageStore } from '@/store/ImageStore';
 import './Tools.sass';
 import { hexToRgba } from '@/lib/helpers/hexToRgba';
 import { rgbaToRgbHex } from '@/lib/helpers/rgbaToRgbHex';
+import { BackgroundStore } from '@/store/BackgroundStore';
 
 export function Tools() {
   const onSave = async () => {
@@ -34,6 +35,10 @@ export function Tools() {
   const onFill = () => {
     ImageStore.instance.fill(ImageStore.instance.currentImageId, ToolStore.instance.color);
   };
+
+  const onClear = () => {
+    ImageStore.instance.fill(ImageStore.instance.currentImageId, { r: 0, g: 0, b: 0, a: 0 });
+  }
 
   const onMainColorChange: JSX.ChangeEventHandlerUnion<HTMLInputElement, Event> = (e) => {
     ToolStore.instance.color = hexToRgba(e.currentTarget.value);
@@ -71,6 +76,21 @@ export function Tools() {
     context.putImageData(newInstance.imageData, 0, 0);
   };
 
+  const onBackgroundSelect: JSX.ChangeEventHandler<HTMLInputElement, Event> = (e) => {
+    const file = e.target?.files?.[0];
+    if (!file) return;
+
+    URL.revokeObjectURL(BackgroundStore.instance.url);
+    BackgroundStore.instance.url = URL.createObjectURL(file);
+  };
+
+  const onBackgroundReset = (e: MouseEvent) => {
+    if (e.button !== 2) return;
+
+    URL.revokeObjectURL(BackgroundStore.instance.url);
+    BackgroundStore.instance.url = '';
+  };
+
   const frame = ImageStore.instance.currentImage;
   if (!frame) return;
 
@@ -93,10 +113,14 @@ export function Tools() {
 
       <p class="tools__tool" onClick={onSave}>Save</p>
       <p class="tools__tool" onClick={onFill}>Fill</p>
+      <p class="tools__tool" onClick={onClear}>Clear</p>
       <p class="tools__tool">
         Width: <input id="frameWidth" type="number" value={frame.width} />
         Height: <input id="frameHeight" type="number" value={frame.height} />
         <button onClick={onResizeClick}>Resize</button>
+      </p>
+      <p class="tools__tool">
+        <input type="file" onChange={onBackgroundSelect} onClick={onBackgroundReset} />
       </p>
       <p class="tools__tool">Size: {ToolStore.instance.size}</p>
 

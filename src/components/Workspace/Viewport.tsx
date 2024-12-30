@@ -3,6 +3,7 @@ import type { ImageDomain } from '@/domains/ImageDomain';
 import { createEffect, onCleanup } from 'solid-js';
 import { ToolStore } from '@/store/ToolStore';
 import { ImageStore } from '@/store/ImageStore';
+import { BackgroundStore } from '@/store/BackgroundStore';
 
 import './Viewport.sass';
 
@@ -11,6 +12,12 @@ export function Viewport() {
   if (!frame) return null;
 
   createEffect(() => {
+    const viewport = document.querySelector<HTMLDivElement>('.viewport');
+    if (!viewport) return;
+
+    const background = document.querySelector<HTMLDivElement>('.viewport__background');
+    if (!background) return;
+
     const canvas = document.querySelector<HTMLCanvasElement>('.viewport__canvas');
     if (!canvas) return;
 
@@ -146,6 +153,18 @@ export function Viewport() {
       updateCursor(e);
     };
 
+    const observer = new ResizeObserver((entries) => {
+      const viewportWidth = viewport.offsetWidth;
+      const viewportHeight = viewport.offsetHeight;
+
+      const size = Math.min(viewportWidth, viewportHeight);
+      background.style.width = `${size}px`;
+      background.style.height = `${size}px`;
+      canvas.style.width = `${size}px`;
+      canvas.style.height = `${size}px`;
+    });
+    observer.observe(viewport);
+
     document.addEventListener('pointerdown', onPointerDown);
     document.addEventListener('contextmenu', onContext);
     document.addEventListener('pointermove', onPointerMove);
@@ -160,15 +179,21 @@ export function Viewport() {
       document.removeEventListener('pointerup', onPointerUp);
       document.removeEventListener('wheel', onWheel);
       ImageStore.instance.off('change', onFrameChange);
+      observer.disconnect();
     });
   });
 
   return (
     <div class="viewport">
-      <canvas class="viewport__canvas" width={frame.width} height={frame.height}>
-        Your device does not support this graphics API!
-      </canvas>
-      <div class="viewport__cursor"></div>
+      <div class="viewport__wrapper">
+        <canvas class="viewport__canvas" width={frame.width} height={frame.height}>
+          Your device does not support this graphics API!
+        </canvas>
+        <div class="viewport__background">
+          {!!(BackgroundStore.instance.url) && <img src={BackgroundStore.instance.url} alt={BackgroundStore.instance.url} />}
+        </div>
+      </div>
+      <div class="viewport__cursor" />
     </div>
   )
 }

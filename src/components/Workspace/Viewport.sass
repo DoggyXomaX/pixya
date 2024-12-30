@@ -6,15 +6,32 @@
   flex-grow: 1
   overflow: hidden
 
+  &__wrapper
+    display: flex
+    aspect-ratio: 1
+    align-items: stretch
+    justify-content: stretch
+
+  &__background
+    pointer-events: none
+    position: absolute
+    display: block
+    aspect-ratio: 1
+    background: radial-gradient(#aaa 25%, #555 50%, #555)
+    background-size: 5px 5px
+    img
+      width: 100%
+      object-fit: contain
+      opacity: 0.5
+
   &__canvas
     cursor: pointer
     display: block
     aspect-ratio: 1
-
-    background: radial-gradient(#aaa 25%, #555 50%, #555)
-    background-size: 5px 5px
-
+    flex-grow: 1
     image-rendering: pixelated
+    z-index: 1
+
   &__cursor
     pointer-events: none
     position: absolute
@@ -23,3 +40,4 @@
     width: 8px
     height: 8px
     outline: 1px solid black
+    z-index: 2
