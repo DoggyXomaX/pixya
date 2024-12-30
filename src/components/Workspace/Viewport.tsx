@@ -6,12 +6,15 @@ import { ImageStore } from '@/store/ImageStore';
 import { BackgroundStore } from '@/store/BackgroundStore';
 
 import './Viewport.sass';
+import { EMouseButton } from '@/enums/EMouseButton';
 
 export function Viewport() {
   const frame = ImageStore.instance.currentImage;
   if (!frame) return null;
 
   createEffect(() => {
+    // First component render
+
     const viewport = document.querySelector<HTMLDivElement>('.viewport');
     if (!viewport) return;
 
@@ -31,12 +34,10 @@ export function Viewport() {
       context.putImageData(item.imageData, 0, 0);
     };
 
-    // First component render
-    const initialFrame = ImageStore.instance.currentImage;
-    if (initialFrame) onFrameChange(initialFrame);
+    const effectFrame = ImageStore.instance.currentImage;
+    if (effectFrame) onFrameChange(effectFrame);
 
-    let isLeftHold = false;
-    let isRightHold = false;
+    let currentHold = EMouseButton.None;
 
     const getXY = (e: PointerEvent | WheelEvent, frame: ImageDomain): { x: number; y: number } => {
       const { left, top, width, height } = canvas.getBoundingClientRect();
@@ -51,7 +52,7 @@ export function Viewport() {
       if (!currentFrame) return;
 
       const { x, y } = getXY(e, currentFrame);
-      const color = isLeftHold ? ToolStore.instance.color : ToolStore.instance.altColor;
+      const color = currentHold === EMouseButton.Left ? ToolStore.instance.color : ToolStore.instance.altColor;
 
       const size = ToolStore.instance.size;
       const halfSize = size / 2 | 0;
@@ -84,21 +85,13 @@ export function Viewport() {
     };
 
     const onPointerDown = (e: PointerEvent) => {
-      if (e.button !== 0 && e.button !== 2) return;
+      if (e.button !== EMouseButton.Left && e.button !== EMouseButton.Right) return;
+
+      currentHold = e.button;
 
       switch (ToolStore.instance.tool) {
-        case 'pencil': {
-          isLeftHold = e.button === 0;
-          isRightHold = e.button === 2;
-          onPencil(e);
-          break;
-        }
-        case 'eraser': {
-          isLeftHold = e.button === 0;
-          isRightHold = e.button === 2;
-          onEraser(e);
-          break;
-        }
+        case 'pencil': return onPencil(e);
+        case 'eraser': return onEraser(e);
       }
     };
 
@@ -127,23 +120,16 @@ export function Viewport() {
     const onPointerMove = (e: PointerEvent) => {
       updateCursor(e);
 
-      if (!isLeftHold && !isRightHold) return;
+      if (currentHold === EMouseButton.None) return;
 
       switch (ToolStore.instance.tool) {
-        case 'pencil': {
-          onPencil(e);
-          break;
-        }
-        case 'eraser': {
-          onEraser(e);
-          break;
-        }
+        case 'pencil': return onPencil(e);
+        case 'eraser': return onEraser(e);
       }
     };
 
-    const onPointerUp = (e: PointerEvent) => {
-      if (e.button === 0) isLeftHold = false;
-      if (e.button === 2) isRightHold = false;
+    const onPointerUp = () => {
+      currentHold = EMouseButton.None;
     }
 
     const onContext = (e: MouseEvent) => e.preventDefault();
@@ -153,7 +139,7 @@ export function Viewport() {
       updateCursor(e);
     };
 
-    const observer = new ResizeObserver((entries) => {
+    const onResize = new ResizeObserver((entries) => {
       const viewportWidth = viewport.offsetWidth;
       const viewportHeight = viewport.offsetHeight;
 
@@ -163,7 +149,6 @@ export function Viewport() {
       canvas.style.width = `${size}px`;
       canvas.style.height = `${size}px`;
     });
-    observer.observe(viewport);
 
     document.addEventListener('pointerdown', onPointerDown);
     document.addEventListener('contextmenu', onContext);
@@ -171,6 +156,7 @@ export function Viewport() {
     document.addEventListener('pointerup', onPointerUp);
     document.addEventListener('wheel', onWheel);
     ImageStore.instance.on('change', onFrameChange);
+    onResize.observe(viewport);
 
     onCleanup(() => {
       document.removeEventListener('pointerdown', onPointerDown);
@@ -179,7 +165,7 @@ export function Viewport() {
       document.removeEventListener('pointerup', onPointerUp);
       document.removeEventListener('wheel', onWheel);
       ImageStore.instance.off('change', onFrameChange);
-      observer.disconnect();
+      onResize.disconnect();
     });
   });
 
