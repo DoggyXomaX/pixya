@@ -3,6 +3,7 @@ import { TToolType } from '@/types/TToolType';
 import { createStore } from 'solid-js/store';
 import { TColor } from '@/types/TColor';
 import { Objectf } from '@/lib/Objectf';
+import { clamp } from '@/lib/Mathf';
 
 type TToolStoreEventMap = {
   change: [type: TToolType];
@@ -12,6 +13,7 @@ type TToolStoreData = {
   tool: TToolType;
   color: TColor;
   altColor: TColor;
+  size: number;
 }
 
 class ToolStore extends XEventTarget<TToolStoreEventMap> {
@@ -19,9 +21,10 @@ class ToolStore extends XEventTarget<TToolStoreEventMap> {
   private readonly _set;
 
   private readonly defaults: TToolStoreData = {
-    tool: 'none',
+    tool: 'pencil',
     color: { r: 0, g: 0, b: 0, a: 255 },
     altColor: { r: 255, g: 255, b: 255, a: 255 },
+    size: 1,
   }
 
   public constructor() {
@@ -56,6 +59,14 @@ class ToolStore extends XEventTarget<TToolStoreEventMap> {
 
   public set altColor(value: TColor) {
     this._set('altColor', value);
+  }
+
+  public get size() {
+    return this._get.size;
+  }
+
+  public set size(value: number) {
+    this._set('size', clamp(value, 1, 100));
   }
 
   public reset() {

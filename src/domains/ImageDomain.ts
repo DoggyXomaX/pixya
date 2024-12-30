@@ -78,8 +78,8 @@ class ImageDomain implements TImageInputData {
         targetData32[y * width + x] = sourceData32[y * oldWidth + x];
       }
     }
-    this._imageData = targetImageData;
 
+    this._imageData = targetImageData;
     this._width = width;
     this._height = height;
   }
@@ -107,10 +107,27 @@ class ImageDomain implements TImageInputData {
 
     const i = (y * this._width + x) * 4;
     const { data: outData } = this._imageData;
-    outData[i] = color.r;
-    outData[i + 1] = color.g;
-    outData[i + 2] = color.b;
-    outData[i + 3] = color.a;
+    outData[i] = color.r & 0xff;
+    outData[i + 1] = color.g & 0xff;
+    outData[i + 2] = color.b & 0xff;
+    outData[i + 3] = color.a & 0xff;
+  }
+
+  public fill(color: TColor) {
+    const [color32] = new Int32Array(
+      new Uint8Array([
+        color.r & 0xff,
+        color.g & 0xff,
+        color.b & 0xff,
+        color.a & 0xff
+      ]).buffer
+    );
+
+    const data32 = new Int32Array(this._imageData.data.buffer);
+    const dataLen = data32.length;
+    for (let i = 0; i < dataLen; i++) {
+      data32[i] = color32;
+    }
   }
 
   public static stub(data: TImageStubData): TImageInputData {

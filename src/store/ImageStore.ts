@@ -9,7 +9,7 @@ type TImageStoreEventMap = {
 };
 
 type TImageStoreData = {
-  currentImage: string;
+  currentImageId: string;
 };
 
 class ImageStore extends XEventTarget<TImageStoreEventMap> {
@@ -18,7 +18,7 @@ class ImageStore extends XEventTarget<TImageStoreEventMap> {
   private readonly _get;
   private readonly _set;
   private readonly _defaults: TImageStoreData = {
-    currentImage: '',
+    currentImageId: '',
   };
 
   public constructor() {
@@ -31,12 +31,16 @@ class ImageStore extends XEventTarget<TImageStoreEventMap> {
     return instance;
   }
 
-  public get currentImage(): string {
-    return this._get.currentImage;
+  public get currentImage(): ImageDomain | undefined {
+    return this.get(this._get.currentImageId);
   }
 
-  public set currentImage(value: string) {
-    this._set('currentImage', value);
+  public get currentImageId(): string {
+    return this._get.currentImageId;
+  }
+
+  public set currentImageId(value: string) {
+    this._set('currentImageId', value);
   }
 
   public create(data: TImageStubData) {
@@ -83,6 +87,14 @@ class ImageStore extends XEventTarget<TImageStoreEventMap> {
     const item = this.get(id);
     if (item) {
       item.setPixel(x, y, color);
+      this.dispatch('change', item);
+    }
+  }
+
+  public fill(id: unknown, color: TColor) {
+    const item = this.get(id);
+    if (item) {
+      item.fill(color);
       this.dispatch('change', item);
     }
   }

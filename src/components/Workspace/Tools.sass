@@ -1,20 +1,35 @@
 .tools
   display: flex
   flex-direction: column
-  background-color: red
   flex-basis: 64px
   gap: 4px
+  z-index: 1
 
   &__tool
     user-select: none
     cursor: pointer
-    display: block
-    padding: 8px
+
+    display: flex
+    flex-direction: column
+    justify-content: center
+    align-items: center
+    gap: 2px
+
+    padding: 4px
+
     width: 64px
-    height: 64px
-    background-color: blue
+    min-height: 64px
+    background-color: #999
+    box-shadow: 2px 2px 8px #0004
     border-radius: 8px
     &:hover
-      background-color: green
+      background-color: #ccc
     &.selected
-      background-color: orange
+      background-color: #fff
+      box-shadow: none
+    input
+      max-width: 48px
+    input[type="color"]
+      width: 48px
+      height: 48px
+      flex-shrink: 0
